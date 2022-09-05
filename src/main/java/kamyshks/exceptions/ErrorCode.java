@@ -1,6 +1,7 @@
 package kamyshks.exceptions;
 
 public enum ErrorCode {
-    JSON_SYNTAX_ERROR,
+    CREATE_OR_UPDATE_BALANCE_ERROR,
+    INTERNAL_SERVER_ERROR,
     INCORRECT_DATA_FORMAT,
 }

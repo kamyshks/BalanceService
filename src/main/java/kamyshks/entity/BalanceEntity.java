@@ -16,6 +16,7 @@ public class BalanceEntity {
 
     @Id
     @Column(name = "ID")
+    @NotNull(message = "Field 'id' must not be blank")
     private Integer id;
 
     @Column(name = "VALUE")
