@@ -765,7 +765,7 @@
         "name": "instance",
         "options": [],
         "query": {
-          "query": "label_values(up{application=\"$application\"}, instance)",
+          "query": "label_values(jvm_memory_used_bytes{application=\"$application\"}, instance)",
           "refId": "Prometheus-instance-Variable-Query"
         },
         "refresh": 2,
