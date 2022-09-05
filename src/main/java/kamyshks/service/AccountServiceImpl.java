@@ -1,7 +1,10 @@
 package kamyshks.service;
 
+import kamyshks.dao.BalanceDao;
 import kamyshks.entity.BalanceEntity;
-import kamyshks.repository.BalanceRepository;
+import kamyshks.exceptions.ErrorMessage;
+import kamyshks.exceptions.SaveException;
+import kamyshks.exceptions.ErrorCode;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,12 +12,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class AccountServiceImpl implements AccountService{
 
-    private final BalanceRepository balanceRepository;
 
+    private final BalanceDao balanceDao;
 
     @Autowired
-    public AccountServiceImpl(final BalanceRepository balanceRepository) {
-        this.balanceRepository = balanceRepository;
+    public AccountServiceImpl(final BalanceDao balanceDao) {
+        this.balanceDao = balanceDao;
     }
 
     /**
@@ -24,13 +27,7 @@ public class AccountServiceImpl implements AccountService{
      */
     @SneakyThrows
     public Long getAmount(final Integer id){
-//        BalanceEntity balanceEntity = balanceRepository.findById(id).orElseThrow(
-//                () -> new EntityEntryNotFound(ErrorMessage.BALANCE_NOT_FOUND, id));
-
-        final BalanceEntity balanceEntity = balanceRepository.findById(id).orElse(
-                new BalanceEntity(id, 0L)
-        );
-        return balanceEntity.getValue();
+        return balanceDao.findById(id).orElse(new BalanceEntity(id, 0L)).getValue();
     }
 
     /**
@@ -41,8 +38,11 @@ public class AccountServiceImpl implements AccountService{
      */
     @SneakyThrows
     public void addAmount(final Integer id, final Long value){
-        final Long amount = getAmount(id);
-        final BalanceEntity balance = new BalanceEntity(id, amount + value);
-        balanceRepository.save(balance);
+        try {
+            balanceDao.save(new BalanceEntity(id, getAmount(id) + value));
+        }catch (Exception e){
+            throw new SaveException(ErrorCode.CREATE_OR_UPDATE_BALANCE_ERROR,
+                    ErrorMessage.CREATE_OR_UPDATE_BALANCE_ERROR);
+        }
     }
 }

@@ -1,6 +1,5 @@
 package kamyshks.service;
 
-
 public interface AccountService {
 
     /**
